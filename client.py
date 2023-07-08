@@ -21,7 +21,7 @@ class Client:
         await self.session.close()
     
     async def new_session(self):
-        return aiohttp.ClientSession()
+        return aiohttp.ClientSession(trust_env=True)
 
     async def login(self, username, password):
         headers = HEADERS_DEFAULT.copy()
@@ -38,7 +38,7 @@ class Client:
     async def post_message(self, message):
         url = API_URL + "media/configure_text_only_post/"
         headers = HEADERS_DEFAULT.copy()
-        
+
         headers.update({'Authorization': 'Bearer IGT:2:' + self.token})
         body_data = {
             "publish_mode": "text_post",
