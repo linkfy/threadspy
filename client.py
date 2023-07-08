@@ -35,14 +35,14 @@ class Client:
             self.device_id = "android-"+ format(random.randint(0, int(1e24)), '36')
             return token
     
-    async def post_message(self, message):
+    async def post_message(self, message, link_attachment=None):
         url = API_URL + "media/configure_text_only_post/"
         headers = HEADERS_DEFAULT.copy()
 
         headers.update({'Authorization': 'Bearer IGT:2:' + self.token})
         body_data = {
             "publish_mode": "text_post",
-            "text_post_app_info": "{\"reply_control\":0}",
+            "text_post_app_info": {"reply_control": 0},
             "timezone_offset": "7200",
             "source_type": "4",
             "_uid": self.user_id,
@@ -56,10 +56,13 @@ class Client:
                 "android_release": "7.1.2"
             }
         }
+
+        if link_attachment:
+            body_data["text_post_app_info"].update({'link_attachment_url': link_attachment})
+
         body = {
             "signed_body":f"SIGNATURE.{json.dumps(body_data)}"
         }
-
         
         async with self.session.post(POST_URL, headers=headers , data=body) as res:
             post_result = await res.json()

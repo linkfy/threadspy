@@ -10,7 +10,8 @@ pip install -r requirements.txt
 ## API
 At the moment the API is experimental:
 - client.login(user, passsword)
-- client.post_message("message") (Links accepted)
+- client.post_message("Message from threads.net") (Links accepted)
+- client.post_message("message", "https://www.threads.net/") (Link attachment accepted)
 
 ## Example usage
 
