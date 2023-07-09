@@ -1,7 +1,7 @@
 # Threadspy - Unofficial Threads Meta Api
 
 <p align="center">
-  <img src=".github/cover.jpg" alt="cover" width="500px" />
+  <img src=".github/cover.png" alt="cover" width="500px" />
 </p>
 
 ## Installation
