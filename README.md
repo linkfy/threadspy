@@ -4,7 +4,7 @@
   <img src=".github/cover.png" alt="cover" width="200px" />
 </p>
 
-# Do you need to post on Threads from PC? Take a look at this
+# Post on Threads from PC
 ## Installation
 Clone the project, execute this instruction inside main folder to install packages:
 
