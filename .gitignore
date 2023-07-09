@@ -1,4 +1,6 @@
 *.env
 __pycache__/
 venv/
-test.py
+images/
+test*.py
+session_data.json
