@@ -58,12 +58,11 @@ class Client:
                 self.token =  session_data['token']
                 self.device_id =  session_data['device_id']
     
-    async def post_message(self, message="", link_attachment=None, image=None, post_id=None):
-        if image:
-            return await self.post_message_with_image(message, image, link_attachment, post_id)
+    async def post_message(self, message="", link_attachment=None, image=None, post_id=None): 
         headers = HEADERS_DEFAULT.copy()
-
         headers.update({'Authorization': 'Bearer IGT:2:' + self.token})
+        url = POST_URL
+
         body_data = {
             "publish_mode": "text_post",
             "text_post_app_info": {"reply_control": 0},
@@ -80,42 +79,12 @@ class Client:
                 "android_release": "7.1.2"
             }
         }
-
-        if post_id:
-            body_data["text_post_app_info"].update({'reply_id': post_id})
-
-        if link_attachment:
-            body_data["text_post_app_info"].update({'link_attachment_url': link_attachment})
-
-        body = {
-            "signed_body":f"SIGNATURE.{json.dumps(body_data)}"
-        }
         
-        async with self.session.post(POST_URL, headers=headers , data=body) as res:
-            post_result = await res.json()
-            return post_result
-
-    async def post_message_with_image(self, message, image, link_attachment=None, post_id=None):
-        upload_id = json.loads(await self.upload_photo(image))['upload_id']
-        headers = HEADERS_DEFAULT.copy()
-
-        headers.update({'Authorization': 'Bearer IGT:2:' + self.token})
-        body_data = {
-            "text_post_app_info": {"reply_control": 0},
-            "scene_capture_type":"",
-            "timezone_offset": "7200",
-            "source_type": "4",
-            "_uid": self.user_id,
-            "device_id": self.device_id,
-            "caption": message,
-            "upload_id": f"{upload_id}",
-            "device": {
-                "manufacturer": "samsung",
-                "model": "SM-N976N",
-                "android_version": 25,
-                "android_release": "7.1.2"
-            }
-        }
+        if image:
+            upload_id = json.loads(await self.upload_photo(image))['upload_id']
+            body_data['upload_id'] = upload_id
+            body_data.pop("publish_mode")
+            url = POST_WITH_IMAGE_URL
         
         if post_id:
             body_data["text_post_app_info"].update({'reply_id': post_id})
@@ -127,10 +96,10 @@ class Client:
             "signed_body":f"SIGNATURE.{json.dumps(body_data)}"
         }
         
-        async with self.session.post(POST_WITH_IMAGE_URL, headers=headers , data=body) as res:
+        async with self.session.post(url, headers=headers , data=body) as res:
             post_result = await res.json()
             return post_result
-    
+
     async def upload_photo(self, image_path):
         headers = HEADERS_DEFAULT.copy()
         headers.update({'Authorization': 'Bearer IGT:2:' + self.token})
