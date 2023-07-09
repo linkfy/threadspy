@@ -14,6 +14,10 @@ At the moment the API is experimental:
 - client.post_message("message", link_attachment="https://www.threads.net/") (Link attachment accepted)
 - client.post_message("message",  image="firefox.jpg") (Image attachment accepted)
 - client.post_message(image="firefox.jpg") (Upload only images)
+
+Extra:
+- Delete "session_data.json" to regenerate login sessions after first login
+
 ## Example usage
 
 ```python
