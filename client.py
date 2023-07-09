@@ -207,6 +207,23 @@ class Client:
             lsd = text[pos + 9: pos + 31]
             return lsd
         
+    async def like_post(self, post_id=None, unlike=False):
+        headers = HEADERS_DEFAULT.copy()
+
+        headers.update({'Authorization': 'Bearer IGT:2:' + self.token})
+        body_data = {
+            "media_id": f"{post_id}",
+            "_uid": self.user_id,
+        }
+        body = {
+            "signed_body":f"SIGNATURE.{json.dumps(body_data)}"
+        }
+
+        action = "like" if unlike == False else "unlike"
+        async with self.session.post(f"{API_URL}media/{post_id}/{action}/", headers=headers , data=body) as res:
+            post_result = await res.json()
+            return post_result
+
     async def get_post_id_from_url(self, url):
         async with self.session.get(url) as res:
             text = await res.text()
