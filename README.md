@@ -1,5 +1,9 @@
 # Threadspy - Unofficial Threads Meta Api
 
+<p align="center">
+  <img src=".github/cover.jpg" alt="cover" width="500px" />
+</p>
+
 ## Installation
 Clone the project, execute this instruction inside main folder to install packages:
 

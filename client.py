@@ -35,10 +35,8 @@ class Client:
             async with self.session.post(LOGIN_URL, headers=headers, data=body) as res:
                 text = await res.text()
                 pos = text.find("Bearer IGT:2:")
-                print(text)
                 token = text[pos+13:pos+173]
                 self.token = token
-                
                 self.user_id = json.loads(b64decode(token).decode('utf8'))['ds_user_id']
                 self.device_id = "android-"+ format(random.randint(0, int(1e24)), '36')
 
