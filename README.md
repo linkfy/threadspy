@@ -20,6 +20,7 @@ At the moment the API is experimental:
 - client.post_message("message",  image="firefox.jpg") (Image attachment accepted)
 - client.post_message(image="firefox.jpg") (Upload only images)
 - client.post_message("Response to thread", post_id="3143089663894947972") by @jackpbreilly 
+- client.like_post(post_id="3143089663894947972", unlike=False) by @jackpbreilly 
 
 Extra:
 - Delete "session_data.json" to regenerate login sessions after first login
@@ -56,6 +57,8 @@ async def main():
         result2 = await client.post_message("Two", link_attachment="https://twitter.com")
         result3 = await client.post_message("Three", image="firefox.jpg", link_attachment="https://chrome.com")
         result4 = await client.post_message("T3",post_id="3143089663894947972")
+        result5 = await client.like_post(post_id="3143089663894947972")
+        result6 = await client.like_post(post_id="3143089663894947972", unlike=True)
         print(result0, result1, result2, result3, result4)
 
 
