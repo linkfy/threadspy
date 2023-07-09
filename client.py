@@ -58,9 +58,9 @@ class Client:
                 self.token =  session_data['token']
                 self.device_id =  session_data['device_id']
     
-    async def post_message(self, message="", link_attachment=None, image=None):
+    async def post_message(self, message="", link_attachment=None, image=None, post_id=None):
         if image:
-            return await self.post_message_with_image(message, image, link_attachment)
+            return await self.post_message_with_image(message, image, link_attachment, post_id)
         headers = HEADERS_DEFAULT.copy()
 
         headers.update({'Authorization': 'Bearer IGT:2:' + self.token})
@@ -81,6 +81,9 @@ class Client:
             }
         }
 
+        if post_id:
+            body_data["text_post_app_info"].update({'reply_id': post_id})
+
         if link_attachment:
             body_data["text_post_app_info"].update({'link_attachment_url': link_attachment})
 
@@ -91,8 +94,8 @@ class Client:
         async with self.session.post(POST_URL, headers=headers , data=body) as res:
             post_result = await res.json()
             return post_result
-    
-    async def post_message_with_image(self, message, image, link_attachment=None):
+
+    async def post_message_with_image(self, message, image, link_attachment=None, post_id=None):
         upload_id = json.loads(await self.upload_photo(image))['upload_id']
         headers = HEADERS_DEFAULT.copy()
 
@@ -113,6 +116,9 @@ class Client:
                 "android_release": "7.1.2"
             }
         }
+        
+        if post_id:
+            body_data["text_post_app_info"].update({'reply_id': post_id})
 
         if link_attachment:
             body_data["text_post_app_info"].update({'link_attachment_url': link_attachment})
@@ -192,7 +198,7 @@ class Client:
         
         async with self.session.post(UPDATE_MEDIA_PQD_HASH_URL, headers=headers , data=body) as res:
             post_result = await res.json()
-            return post_result
+            return post_result    
 
     async def get_lsd(self):
         async with self.session.get("https://www.threads.net/@linkfytester") as res:
@@ -200,3 +206,10 @@ class Client:
             pos = text.find("\"token\"")
             lsd = text[pos + 9: pos + 31]
             return lsd
+        
+    async def get_post_id_from_url(self, url):
+        async with self.session.get(url) as res:
+            text = await res.text()
+            pos = text.find("\"post_id\"")
+            post_id = text[pos + 11: pos + 30]
+            return post_id
