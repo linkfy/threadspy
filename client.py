@@ -25,38 +25,37 @@ class Client:
     async def new_session(self):
         return aiohttp.ClientSession(trust_env=True)
 
-    async def login(self, username, password):
-        try:
-            await self.relogin()
-        except Exception as e:
-            print(e)
-            headers = HEADERS_DEFAULT.copy()
-            body = f'params={{"client_input_params":{{"password":"{password}","contact_point":"{username}","device_id":"{self.device_id}"}}, "server_params":{{"credential_type":"password","device_id":"{self.device_id}"}}}}&bk_client_context={{"bloks_version":"5f56efad68e1edec7801f630b5c122704ec5378adbee6609a448f105f34a9c73","styles_id":"instagram"}}&bloks_versioning_id=5f56efad68e1edec7801f630b5c122704ec5378adbee6609a448f105f34a9c73'
-            async with self.session.post(LOGIN_URL, headers=headers, data=body) as res:
-                text = await res.text()
-                pos = text.find("Bearer IGT:2:")
-                token = text[pos+13:pos+173]
-                self.token = token
-                self.user_id = json.loads(b64decode(token).decode('utf8'))['ds_user_id']
-                self.device_id = "android-"+ format(random.randint(0, int(1e24)), '36')
+    async def generate_session_data(self, username, password):
+        headers = HEADERS_DEFAULT.copy()
+        body = f'params={{"client_input_params":{{"password":"{password}","contact_point":"{username}","device_id":"{self.device_id}"}}, "server_params":{{"credential_type":"password","device_id":"{self.device_id}"}}}}&bk_client_context={{"bloks_version":"5f56efad68e1edec7801f630b5c122704ec5378adbee6609a448f105f34a9c73","styles_id":"instagram"}}&bloks_versioning_id=5f56efad68e1edec7801f630b5c122704ec5378adbee6609a448f105f34a9c73'
+        async with self.session.post(LOGIN_URL, headers=headers, data=body) as res:
+            text = await res.text()
+            pos = text.find("Bearer IGT:2:")
+            token = text[pos+13:pos+173]
+            self.token = token
+            self.user_id = json.loads(b64decode(token).decode('utf8'))['ds_user_id']
+            self.device_id = "android-"+ format(random.randint(0, int(1e24)), '36')
 
-                session_data = {
-                    'user_id': f'{self.user_id}',
-                    'device_id': f'{self.device_id}',
-                    'token': f'{self.token}',
-                }
+            session_data = {
+                'user_id': f'{self.user_id}',
+                'device_id': f'{self.device_id}',
+                'token': f'{self.token}',
+            }
 
-                with open('session_data.json', 'w') as f:
-                    json.dump(session_data, f)
+            with open('session_data.json', 'w') as f:
+                json.dump(session_data, f)
 
-                return token
+            return token
     
-    async def relogin(self):
+    async def login(self):
+        try:
             with open('session_data.json', 'r') as f:
                 session_data = json.load(f)
                 self.user_id = session_data['user_id']
                 self.token =  session_data['token']
                 self.device_id =  session_data['device_id']
+        except Exception as e:
+            print(e)
     
     async def post_message(self, message="", link_attachment=None, image=None, post_id=None):
         if image:

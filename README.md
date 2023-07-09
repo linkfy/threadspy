@@ -14,6 +14,7 @@ pip install -r requirements.txt
 
 ## API
 At the moment the API is experimental:
+- client.generate_session_data("username", "password")
 - client.login(user, passsword)
 - client.post_message("Message from threads.net") (Links accepted)
 - client.post_message("message", link_attachment="https://www.threads.net/") (Link attachment accepted)
@@ -22,6 +23,7 @@ At the moment the API is experimental:
 - client.post_message("Response to thread", post_id="3143089663894947972") by @jackpbreilly 
 
 Extra:
+- Create a "session_data.json" using client.generate_session_data before using login.
 - Delete "session_data.json" to regenerate login sessions after first login
 
 ## Example usage
@@ -34,7 +36,7 @@ load_dotenv()
 
 async def main():
     async with Client() as client:
-        token = await client.login(os.environ["USER"],os.environ["PASSWORD"])
+        await client.login()
         result = await client.post_message("Test client api")
 
 asyncio.run(main())
@@ -50,7 +52,7 @@ load_dotenv()
 
 async def main():
     async with Client() as client:
-        await client.login(os.environ["USER"],os.environ["PASSWORD"])
+        await client.login()
         result0 = await client.post_message(image="firefox.jpg")
         result1 = await client.post_message("One", image="firefox.jpg")
         result2 = await client.post_message("Two", link_attachment="https://twitter.com")
