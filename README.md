@@ -19,6 +19,7 @@ At the moment the API is experimental:
 - client.post_message("message", link_attachment="https://www.threads.net/") (Link attachment accepted)
 - client.post_message("message",  image="firefox.jpg") (Image attachment accepted)
 - client.post_message(image="firefox.jpg") (Upload only images)
+- client.post_message("Response to thread", post_id="3143089663894947972") by @jackpbreilly 
 
 Extra:
 - Delete "session_data.json" to regenerate login sessions after first login
@@ -54,7 +55,8 @@ async def main():
         result1 = await client.post_message("One", image="firefox.jpg")
         result2 = await client.post_message("Two", link_attachment="https://twitter.com")
         result3 = await client.post_message("Three", image="firefox.jpg", link_attachment="https://chrome.com")
-        print(result0, result1, result2, result3)
+        result4 = await client.post_message("T3",post_id="3143089663894947972")
+        print(result0, result1, result2, result3, result4)
 
 
 asyncio.run(main())
